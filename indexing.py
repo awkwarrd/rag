@@ -27,10 +27,7 @@ def parse_video_and_store(url):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     docs = text_splitter.split_documents(transcription)
 
-    pc = Pinecone()
-
-    if "miami" not in pc.list_indexes().names():
-        pc.create_index("miami", dimension=768, spec=ServerlessSpec("aws", "us-east-1"))
+    pc = Pinecone(embedding=EMBEDDINGS, index="miami")
 
     PineconeVectorStore.from_documents(documents=docs, embedding=EMBEDDINGS, index_name="miami")
     return 
@@ -70,11 +67,15 @@ def load_files_to_pinecone():
             docs = text_splitter.split_text(transcription)
             
 
-            pc = Pinecone()
+            pc = Pinecone(embedding=EMBEDDINGS, index="miami")
 
-            if "miami" not in pc.list_indexes().names():
-                pc.create_index("miami", dimension=768, spec=ServerlessSpec("aws", "us-east-1"))
+            #if "miami" not in pc.list_indexes().names():
+            #    pc.create_index("miami", dimension=768, spec=ServerlessSpec("aws", "us-east-1"))
 
             PineconeVectorStore.from_texts(texts=docs, embedding=EMBEDDINGS, index_name="miami")
     return 
 
+
+load_files_to_pinecone()
+parse_video_and_store("eWfa2ouQooI")
+parse_video_and_store("EiWcpgz2UDc")

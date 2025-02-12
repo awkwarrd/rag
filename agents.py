@@ -11,6 +11,8 @@ SYSTEM_PROMPT = """
 You are a helpful assistant. Communicate and answer any questions you've been asked based on your general knowledge, but if there is context provided below, use it to build your answer
 
 Context: {context}
+
+If there is no questions, just act friendly and try to communicate with a user.
 """
 
 def create_prompt():
