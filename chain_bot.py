@@ -15,7 +15,7 @@ for message in st.session_state.messages:
         st.markdown(message.content)
 
 
-if prompt := st.chat_input("Ask any question about Hotline Miami Series:"):
+if prompt := st.chat_input("Ask any question or start conversation:"):
     with st.chat_message("user"):
         st.markdown(prompt)
     st.session_state.messages.append(HumanMessage(prompt))
