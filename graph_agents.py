@@ -1,7 +1,7 @@
 from typing import TypedDict
 from typing_extensions import Annotated, Sequence
 
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, RemoveMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import BaseMessage
 from langchain_core.prompts.chat import MessagesPlaceholder, ChatPromptTemplate
@@ -35,10 +35,9 @@ def resolve_coreference(state:State):
     conversation = " $ ".join([x.content for x in state["messages"][::2]])
     doc = NLP(conversation, component_cfg={"fastcoref": {'resolve_text': True}})
 
-    #print("DEBUG | Conversation:", conversation)
     resolved = doc._.resolved_text
-    #print("DEBUG | Resolved message:", resolved)
-    return {"messages" : [resolved.split(" $ ")[-1]]}
+    deleted_message = [RemoveMessage(state["messages"][-1].id)]
+    return {"messages" : deleted_message + [resolved.split(" $ ")[-1]]}
 
 
 def generate(state: State):
@@ -59,6 +58,7 @@ def retrieve(state: State):
     retrieved_docs = retriever.invoke(query)
 
     docs_content = " ".join([doc.page_content for doc in retrieved_docs])
+    
     
     return {"messages": [{"role": "user", "content": docs_content}]}
 
@@ -146,9 +146,9 @@ def start_chat():
             st.markdown(prompt)
         st.session_state.messages.append(HumanMessage(prompt))
 
-    with st.chat_message("ai"):
-        response = graph.invoke({"messages" : st.session_state.messages}, config=config)["messages"][-1].content
-        print(prompt)
-        print(response)
-        st.write_stream(generate_output(response))
-    st.session_state.messages.append(AIMessage(response))
+        with st.chat_message("ai"):
+            response = graph.invoke({"messages" : st.session_state.messages}, config=config)["messages"][-1].content
+            print(prompt)
+            print(response)
+            st.write_stream(generate_output(response))
+        st.session_state.messages.append(AIMessage(response))

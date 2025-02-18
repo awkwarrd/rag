@@ -4,6 +4,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 graph = create_graph()
-config = {"configurable" : {"thread_id" : "1"}}
+config = {"configurable" : {"thread_id" : "2"}}
 
 start_chat()
