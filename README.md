@@ -19,6 +19,8 @@ LangGraph solution allows not only to retrieve data, but also search for relevan
 
 Flow is next:
 1. Query is recieved
+2. Agent resolves coreferences in last message (if there any), based on conversation history. 
+> _For example: "Who is __Travis Scott__? Do you like __his__ music?" -> "Who is __Travis Scott__? Do you like __Travis Scott__ music?"_
 2. Agent checks, does user want to retrieve data from vector store or search for relevant data on the internet
 3. Agent receives data relevant data and passes it to the LLM
 4. LLM generates output and returns it
